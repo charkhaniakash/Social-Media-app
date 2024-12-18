@@ -23,7 +23,7 @@ const Home = () => {
   const {
     loading,
     error,
-    data: { getPosts: posts } = {} ,
+    data: { getPosts: posts } = {},
   } = useQuery(GET_POSTS_DATA);
   return (
     <Grid columns="three" divided>
@@ -35,7 +35,8 @@ const Home = () => {
         {loading ? (
           <h1>...loading</h1>
         ) : (
-          posts && posts.map(post => (
+          posts &&
+          posts.map((post) => (
             <GridColumn key={post?.id}>
               <PostCard post={post} />
             </GridColumn>
