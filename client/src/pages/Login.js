@@ -1,9 +1,10 @@
 // @ts-ignore
 import { useMutation, gql } from "@apollo/client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Form } from "semantic-ui-react";
 import { useForm } from "../utils/hooks";
+import { AuthContext } from "../context/authContext";
 
 const Login = () => {
   const { onChange, values, onSubmit } = useForm(logingUser, {
@@ -11,14 +12,16 @@ const Login = () => {
     password: "",
   });
 
+  const context = useContext(AuthContext);
+
   const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
 
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-    update(_, result) {
-      console.log("???/",result);
-      navigate("/")
+    update(_, { data: { login: userData } }) {
+      context.login(userData);
+      navigate("/");
     },
     variables: values,
     onError(err) {
@@ -28,7 +31,7 @@ const Login = () => {
   });
 
   function logingUser() {
-    loginUser()
+    loginUser();
   }
 
   return (

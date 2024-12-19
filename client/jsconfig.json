@@ -2,6 +2,7 @@
     "compilerOptions": {
         "jsx": "react-jsx",
         "checkJs": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "suppressImplicitAnyIndexErrors": true
     }
 }
