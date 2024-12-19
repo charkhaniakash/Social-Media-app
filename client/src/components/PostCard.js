@@ -30,7 +30,7 @@ const PostCard = ({ post }) => {
           size="mini"
           src="/images/avatar/large/molly.png"
         />
-        <CardHeader>{post.username}</CardHeader>
+        <CardHeader>{post.user}</CardHeader>
         <CardMeta>{moment(post.createdAt).fromNow()}</CardMeta>
         <CardDescription>{post.body}</CardDescription>
       </CardContent>

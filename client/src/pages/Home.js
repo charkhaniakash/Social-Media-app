@@ -1,6 +1,9 @@
 import { useQuery, gql } from "@apollo/client";
 import { Grid, GridColumn, GridRow } from "semantic-ui-react";
 import PostCard from "../components/PostCard";
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
+import PostForm from "../components/PostForm";
 
 const GET_POSTS_DATA = gql`
   {
@@ -8,7 +11,7 @@ const GET_POSTS_DATA = gql`
       id
       body
       createdAt
-      username
+      user
       likeCount
       commentCount
       comments {
@@ -25,6 +28,9 @@ const Home = () => {
     error,
     data: { getPosts: posts } = {},
   } = useQuery(GET_POSTS_DATA);
+
+  const { user } = useContext(AuthContext);
+
   return (
     <Grid columns="three" divided>
       <Grid.Row>
@@ -32,6 +38,12 @@ const Home = () => {
       </Grid.Row>
 
       <GridRow>
+        {user && (
+          <Grid columns="one">
+            <PostForm />
+          </Grid>
+        )}
+
         {loading ? (
           <h1>...loading</h1>
         ) : (
