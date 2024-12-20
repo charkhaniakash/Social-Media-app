@@ -8,11 +8,12 @@ const {validateRegisterInput, validateLoginInput} = require("../../utils/validat
 
 
 function generateToken(user){
+  console.log("useruseruser" , user)
   return jwt.sign(
     {
       id: user.id,
       email: user.email,
-      username: user.userName,
+      username: user.username,
     },
     SECRET_KEY,
     { expiresIn: "1h" }
