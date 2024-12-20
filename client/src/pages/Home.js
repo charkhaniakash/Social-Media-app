@@ -11,7 +11,7 @@ const GET_POSTS_DATA = gql`
       id
       body
       createdAt
-      user
+      username
       likeCount
       commentCount
       comments {
@@ -31,6 +31,7 @@ const Home = () => {
 
   const { user } = useContext(AuthContext);
 
+  console.log("posts" , posts)
   return (
     <Grid columns="three" divided>
       <Grid.Row>

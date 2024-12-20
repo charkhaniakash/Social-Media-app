@@ -31,7 +31,6 @@ module.exports = {
   Mutation: {
     async createPost(_, { body }, context) {
       const user = checkAuth(context);
-
       if (body.trim() === '') {
         throw new Error('Post body must not be empty');
       }
@@ -54,7 +53,6 @@ module.exports = {
       try {
         const post = await Post.findById(postId);
         if (user.username === post.username) {
-          console.log("User deleted");
           await post.deleteOne();
           return "Post deleted successfully";
         } else {
