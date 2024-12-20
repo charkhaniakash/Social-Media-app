@@ -4,12 +4,24 @@ import { useForm } from "../utils/hooks";
 import { gql, useMutation } from "@apollo/client";
 
 const PostForm = () => {
-  const { values, onChange, onSubmit } = useForm(callBack, {
+  const { values, onChange, onSubmit , setValues } = useForm(callBack, {
     body: "",
   });
 
-  const [createPost, { error }] = useMutation(CREATE_POST, {
-    update(_, result) {
+  const [createPost, { error , loading }] = useMutation(CREATE_POST, {
+    update(cache, { data: { createPost } }) {
+      // Read existing posts from cache
+      const existingPosts = cache.readQuery({ query: GET_POSTS_DATA });
+
+      // Add the new post to the list
+      cache.writeQuery({
+        query: GET_POSTS_DATA,
+        data: {
+          getPosts: [createPost, ...existingPosts.getPosts], // Add the new post at the beginning
+        },
+      });
+
+      // Clear the form input
       values.body = "";
     },
     variables: values,
@@ -27,17 +39,35 @@ const PostForm = () => {
           placeholder="Hi Akash .."
           name="body"
           type="text"
-          value={values?.user}
+          value={values?.body}
           onChange={onChange}
         />
 
-        <Button type="submit" primary>
+        <Button type="submit" primary className={loading ? "loading" : ""}>
           Create a new 
         </Button>
       </Form>
     </div>
   );
 };
+
+const GET_POSTS_DATA = gql`
+  {
+    getPosts {
+      id
+      body
+      createdAt
+      username
+      likeCount
+      commentCount
+      comments {
+        id
+        createdAt
+        body
+      }
+    }
+  }
+`;
 
 const CREATE_POST = gql`
   mutation createPost($body: String!) {

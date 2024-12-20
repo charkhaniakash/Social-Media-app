@@ -31,7 +31,6 @@ const Home = () => {
 
   const { user } = useContext(AuthContext);
 
-  console.log("posts" , posts)
   return (
     <Grid columns="three" divided>
       <Grid.Row>
