@@ -28,6 +28,10 @@ const PostForm = () => {
   });
 
   function callBack() {
+    if(values.body === ""){
+      alert("Please enter a post.")
+      return;
+    }
     createPost();
   }
 
@@ -41,12 +45,21 @@ const PostForm = () => {
           type="text"
           value={values?.body}
           onChange={onChange}
+          error={error ? true : false}
         />
 
         <Button type="submit" primary className={loading ? "loading" : ""}>
           Create a new 
         </Button>
       </Form>
+
+      {error && (
+        <div className="ui error message">
+          <ul>
+            <li>{error.graphQLErrors[0].message}</li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

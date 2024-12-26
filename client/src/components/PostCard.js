@@ -1,5 +1,5 @@
 import moment from "moment/moment";
-import React from "react";
+import React, { useContext } from "react";
 import {
   CardMeta,
   CardHeader,
@@ -12,16 +12,17 @@ import {
   Icon,
   Label,
 } from "semantic-ui-react";
+import { AuthContext } from "../context/authContext";
 
 const PostCard = ({ post }) => {
+  const { user } = useContext(AuthContext);
 
-  const likePost =()=>{
-    console.log("Liked")
-  }
-  const commentOnPost =()=>{
-    console.log("commented")
-  }
-  console.log("post", post);
+  const likePost = () => {
+    console.log("Liked");
+  };
+  const commentOnPost = () => {
+    console.log("commented");
+  };
   return (
     <Card>
       <CardContent>
@@ -51,6 +52,14 @@ const PostCard = ({ post }) => {
             {post.commentCount}
           </Label>
         </Button>
+
+        {user && user.username === post.username && (
+          <Button as="div" labelPosition="right" onClick={() => console.log("Delete Post")}>
+            <Button icon>
+              <Icon name="trash" />
+            </Button>
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

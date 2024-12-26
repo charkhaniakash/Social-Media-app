@@ -15,6 +15,7 @@ if (localStorage.getItem('jwtToken')) {
 }
 const AuthContext = createContext({
   user: null,
+  // @ts-ignore
   login: (userData) => {},
   logout: () => {},
 });
@@ -35,6 +36,7 @@ function AuthProvider(props) {
 
   function login(userData) {
     localStorage.setItem("jwtToken", userData.token);
+    // @ts-ignore
     dispatch({
       type: "LOGIN",
       payload: userData,
@@ -42,6 +44,7 @@ function AuthProvider(props) {
   }
   function logout() {
     localStorage.removeItem("jwtToken");
+    // @ts-ignore
     dispatch({ type: "LOGOUT" });
   }
 
