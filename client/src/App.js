@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import MenuBar from "./components/MenuBar";
 import { AuthProvider } from "./context/authContext";
 import AuthRoute from "./utils/AuthRoute";
+import SinglePost from "./pages/SinglePost";
 
 function App() {
   return (
@@ -17,7 +18,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthRoute element={<Login />} />} />
-          <Route path="/register" element={<AuthRoute element={<Register />} />} />
+          <Route
+            path="/register"
+            element={<AuthRoute element={<Register />} />}
+          />
+          <Route path="/posts/:postId" element={<SinglePost />} />
         </Routes>
       </Router>
     </AuthProvider>
