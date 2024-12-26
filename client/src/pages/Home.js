@@ -13,6 +13,9 @@ const GET_POSTS_DATA = gql`
       createdAt
       username
       likeCount
+      likes {
+        username
+      }
       commentCount
       comments {
         id
