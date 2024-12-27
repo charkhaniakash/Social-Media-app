@@ -30,14 +30,15 @@ const DeletePost = ({ postId, commentId }) => {
           },
         });
       }
-      navigate("/");
+      if (!commentId) {
+        navigate("/");
+      }
     },
     variables: { postId, commentId },
     onError(err) {
       console.log("err", err);
     },
   });
-
 
   return (
     <>

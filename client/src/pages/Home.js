@@ -21,6 +21,7 @@ const GET_POSTS_DATA = gql`
         id
         createdAt
         body
+        username
       }
     }
   }

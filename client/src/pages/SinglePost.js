@@ -27,8 +27,6 @@ const SinglePost = () => {
 
   const [comment, setComment] = useState("");
 
-  console.log("id", postId);
-
   const { user } = useContext(AuthContext);
 
   const [postComment, { loading }] = useMutation(POST_COMMENTS, {
@@ -61,6 +59,7 @@ const SinglePost = () => {
       likeCount,
       commentCount,
     } = getPost;
+
 
     postContents = (
       <Grid>
@@ -127,7 +126,7 @@ const SinglePost = () => {
             {comments?.map((comment) => (
               <Card fluid key={comment.id}>
                 <Card.Content>
-                  {user && user.username === username && (
+                  {user && user.username === comment.username && (
                     <DeletePost postId={id} commentId={comment.id} />
                   )}
                   {/* {user && user.username === username && ( */}
@@ -156,6 +155,7 @@ const POST_COMMENTS = gql`
         id
         body
         createdAt
+        username
       }
       commentCount
     }
@@ -178,6 +178,7 @@ const FETCH_POST_QUERY = gql`
         id
         createdAt
         body
+        username
       }
     }
   }
