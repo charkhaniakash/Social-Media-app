@@ -1,8 +1,22 @@
-import { useQuery } from "@apollo/client";
+// @ts-nocheck
+import { useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import React, { useContext } from "react";
-import { useParams } from "react-router-dom";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardMeta, Grid, GridColumn, GridRow, Icon, Image, Label } from "semantic-ui-react";
+import React, { useContext, useState } from "react";
+import { Form, useParams } from "react-router-dom";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardMeta,
+  Grid,
+  GridColumn,
+  GridRow,
+  Icon,
+  Image,
+  Label,
+} from "semantic-ui-react";
 import LikeButton from "../components/LikeButton";
 import moment from "moment";
 import { AuthContext } from "../context/authContext";
@@ -11,14 +25,27 @@ import DeletePost from "../components/DeletePost";
 const SinglePost = () => {
   const { postId } = useParams();
 
+  const [comment, setComment] = useState("");
+
   console.log("id", postId);
 
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
-  const {data: { getPost} = {}} = useQuery(FETCH_POST_QUERY, {
+  const [postComment, { loading }] = useMutation(POST_COMMENTS, {
+    update(data) {
+      setComment("");
+      console.log(data)
+    },
     variables: {
-      postId
-    }
+      postId,
+      body: comment,
+    },
+  });
+
+  const { data: { getPost } = {} } = useQuery(FETCH_POST_QUERY, {
+    variables: {
+      postId,
+    },
   });
   let postContents;
   if (!getPost) {
@@ -36,7 +63,7 @@ const SinglePost = () => {
     } = getPost;
 
     postContents = (
-        <Grid>
+      <Grid>
         <GridRow>
           <GridColumn width={2}>
             <Image
@@ -55,29 +82,85 @@ const SinglePost = () => {
               <hr />
               <CardContent extra>
                 <LikeButton user={user} post={{ id, likeCount, likes }} />
-                  <Button
-                    as="div"
-                    labelPosition="right"
-                    onClick={() => console.log('Comment on post')}
-                  >
-                    <Button basic color="blue">
-                      <Icon name="comments" />
-                    </Button>
-                    <Label basic color="blue" pointing="left">
-                      {commentCount}
-                    </Label>
+                <Button
+                  as="div"
+                  labelPosition="right"
+                  onClick={() => console.log("Comment on post")}
+                >
+                  <Button basic color="blue">
+                    <Icon name="comments" />
                   </Button>
-                  {user && user.username === username && <DeletePost postId ={id} />}
+                  <Label basic color="blue" pointing="left">
+                    {commentCount}
+                  </Label>
+                </Button>
+                {user && user.username === username && (
+                  <DeletePost postId={id} />
+                )}
               </CardContent>
             </Card>
+
+            {user && (
+              <Card fluid>
+                <CardContent>
+                  <p>Post a comment</p>
+                  <div className="ui action input fluid">
+                    <input
+                      type="text"
+                      placeholder="Comment.."
+                      name="comment"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      onClick={postComment}
+                      className={`ui button teal ${loading ? "loading" : ""}`}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {comments?.map((comment) => (
+              <Card fluid key={comment.id}>
+                <Card.Content>
+                  {user && user.username === username && (
+                    <DeletePost postId={id} commentId={comment.id} />
+                  )}
+                  {/* {user && user.username === username && ( */}
+                  {/* <DeletePost postId={id} commentId={comment.id} /> */}
+                  {/* )} */}
+                  <Card.Header>{comment.username}</Card.Header>
+                  <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
+                  <Card.Description>{comment.body}</Card.Description>
+                </Card.Content>
+              </Card>
+            ))}
           </GridColumn>
         </GridRow>
       </Grid>
-    )
+    );
   }
 
   return postContents;
 };
+
+const POST_COMMENTS = gql`
+  mutation createComment($postId: String!, $body: String!) {
+    createComment(postId: $postId, body: $body) {
+      id
+      comments {
+        id
+        body
+        createdAt
+      }
+      commentCount
+    }
+  }
+`;
 
 const FETCH_POST_QUERY = gql`
   query ($postId: ID!) {
@@ -99,6 +182,5 @@ const FETCH_POST_QUERY = gql`
     }
   }
 `;
-
 
 export default SinglePost;

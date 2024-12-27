@@ -10,6 +10,7 @@ module.exports = {
     async getPosts() {
       try {
         const posts = await Post.find().sort({ _id: -1 });
+        console.log("posts" , posts)
         return posts;
       } catch (error) {
         throw new Error(error);
