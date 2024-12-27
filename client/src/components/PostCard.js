@@ -19,15 +19,12 @@ import { Link } from "react-router-dom";
 import DeletePost from "./DeletePost";
 
 const PostCard = ({ post }) => {
-  console.log("post", post);
   const { user } = useContext(AuthContext);
 
-  const commentOnPost = () => {
-    console.log("commented");
-  };
   return (
     <Card>
-      <CardContent>
+      <CardContent           as={Link}
+          to={`/posts/${post.id}`}>
         <Image
           floated="right"
           size="mini"
@@ -42,7 +39,12 @@ const PostCard = ({ post }) => {
           user={user}
           post={{ id: post.id, likes: post.likes, likeCount: post.likeCount }}
         />
-        <Button as="div" labelPosition="right" as={Link} to={`/posts/${post.id}`} onClick={commentOnPost}>
+        <Button
+          as="div"
+          labelPosition="right"
+          as={Link}
+          to={`/posts/${post.id}`}
+        >
           <Button icon>
             <Icon name="comments" />
           </Button>

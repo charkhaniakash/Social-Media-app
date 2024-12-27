@@ -32,7 +32,6 @@ const SinglePost = () => {
   const [postComment, { loading }] = useMutation(POST_COMMENTS, {
     update(data) {
       setComment("");
-      console.log(data)
     },
     variables: {
       postId,
@@ -59,7 +58,6 @@ const SinglePost = () => {
       likeCount,
       commentCount,
     } = getPost;
-
 
     postContents = (
       <Grid>

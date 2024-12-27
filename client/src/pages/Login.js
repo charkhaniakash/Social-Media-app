@@ -25,7 +25,6 @@ const Login = () => {
     },
     variables: values,
     onError(err) {
-      console.log("err.graphQLErrors", err.graphQLErrors);
       setErrors(err.graphQLErrors[0]?.extensions?.errors);
     },
   });
