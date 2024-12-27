@@ -61,23 +61,34 @@ const SinglePost = () => {
 
     postContents = (
       <Grid>
-        <GridRow>
-          <GridColumn width={2}>
+        <Grid.Row>
+          <Grid.Column width={2}>
             <Image
               src="https://react.semantic-ui.com/images/avatar/large/molly.png"
               size="small"
-              float="right"
+              floated="right"
+              circular
+              style={{ marginBottom: "10px" }}
             />
-          </GridColumn>
-          <GridColumn width={10}>
-            <Card fluid>
-              <CardContent>
-                <CardHeader>{username}</CardHeader>
-                <CardMeta>{moment(createdAt).fromNow()}</CardMeta>
-                <CardDescription>{body}</CardDescription>
-              </CardContent>
+          </Grid.Column>
+          <Grid.Column width={10}>
+            {/* Post Card */}
+            <Card fluid style={{ marginBottom: "20px" }}>
+              <Card.Content>
+                <Card.Header style={{ fontSize: "1.5em" }}>
+                  {username}
+                </Card.Header>
+                <Card.Meta style={{ color: "gray" }}>
+                  {moment(createdAt).fromNow()}
+                </Card.Meta>
+                <Card.Description
+                  style={{ marginTop: "10px", fontSize: "1.2em" }}
+                >
+                  {body}
+                </Card.Description>
+              </Card.Content>
               <hr />
-              <CardContent extra>
+              <Card.Content extra>
                 <LikeButton user={user} post={{ id, likeCount, likes }} />
                 <Button
                   as="div"
@@ -94,17 +105,20 @@ const SinglePost = () => {
                 {user && user.username === username && (
                   <DeletePost postId={id} />
                 )}
-              </CardContent>
+              </Card.Content>
             </Card>
 
+            {/* Comment Form */}
             {user && (
               <Card fluid>
-                <CardContent>
-                  <p>Post a comment</p>
+                <Card.Content>
+                  <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                    Post a Comment
+                  </p>
                   <div className="ui action input fluid">
                     <input
                       type="text"
-                      placeholder="Comment.."
+                      placeholder="Write a comment..."
                       name="comment"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
@@ -117,27 +131,31 @@ const SinglePost = () => {
                       Submit
                     </button>
                   </div>
-                </CardContent>
+                </Card.Content>
               </Card>
             )}
 
+            {/* Comments Section */}
             {comments?.map((comment) => (
-              <Card fluid key={comment.id}>
+              <Card fluid key={comment.id} style={{ marginTop: "10px" }}>
                 <Card.Content>
                   {user && user.username === comment.username && (
                     <DeletePost postId={id} commentId={comment.id} />
                   )}
-                  {/* {user && user.username === username && ( */}
-                  {/* <DeletePost postId={id} commentId={comment.id} /> */}
-                  {/* )} */}
-                  <Card.Header>{comment.username}</Card.Header>
-                  <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
-                  <Card.Description>{comment.body}</Card.Description>
+                  <Card.Header style={{ fontWeight: "bold" }}>
+                    {comment.username}
+                  </Card.Header>
+                  <Card.Meta style={{ color: "gray" }}>
+                    {moment(comment.createdAt).fromNow()}
+                  </Card.Meta>
+                  <Card.Description style={{ marginTop: "10px" }}>
+                    {comment.body}
+                  </Card.Description>
                 </Card.Content>
               </Card>
             ))}
-          </GridColumn>
-        </GridRow>
+          </Grid.Column>
+        </Grid.Row>
       </Grid>
     );
   }

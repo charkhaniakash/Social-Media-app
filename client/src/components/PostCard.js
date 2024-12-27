@@ -22,41 +22,74 @@ const PostCard = ({ post }) => {
   const { user } = useContext(AuthContext);
 
   return (
-    <Card>
-      <CardContent           as={Link}
-          to={`/posts/${post.id}`}>
+    <Card
+      fluid
+      style={{
+        marginBottom: "20px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <Card.Content
+        as={Link}
+        to={`/posts/${post.id}`}
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <Image
-          floated="right"
-          size="mini"
+          floated="left"
+          size="tiny"
           src="/images/avatar/large/molly.png"
+          style={{ borderRadius: "50%", marginRight: "15px" }}
         />
-        <CardHeader>{post.username}</CardHeader>
-        <CardMeta>{moment(post.createdAt).fromNow()}</CardMeta>
-        <CardDescription>{post.body}</CardDescription>
-      </CardContent>
-      <CardContent extra>
+        <div>
+          <Card.Header style={{ fontSize: "1.5em", fontWeight: "bold" }}>
+            {post.username}
+          </Card.Header>
+          <Card.Meta style={{ color: "gray" }}>
+            {moment(post.createdAt).fromNow()}
+          </Card.Meta>
+          <Card.Description style={{ marginTop: "10px", fontSize: "1.1em" }}>
+            {post.body}
+          </Card.Description>
+        </div>
+      </Card.Content>
+      <Card.Content
+        extra
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <LikeButton
           user={user}
           post={{ id: post.id, likes: post.likes, likeCount: post.likeCount }}
         />
         <Button
-          as="div"
           labelPosition="right"
           as={Link}
           to={`/posts/${post.id}`}
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderRadius: "20px",
+            boxShadow: "none",
+          }}
         >
           <Button icon>
-            <Icon name="comments" />
+            <Icon name="comments" style={{ color: "#4183c4" }} />
           </Button>
-          <Label as="a" basic pointing="left">
+          <Label
+            as="a"
+            basic
+            pointing="left"
+            style={{ backgroundColor: "#f5f5f5" }}
+          >
             {post.commentCount}
           </Label>
         </Button>
-
         {user && user.username === post.username && (
           <DeletePost postId={post.id} />
         )}
-      </CardContent>
+      </Card.Content>
     </Card>
   );
 };

@@ -1,5 +1,12 @@
+// @ts-nocheck
 import { useQuery, gql } from "@apollo/client";
-import { Grid, GridColumn, GridRow, TransitionGroup } from "semantic-ui-react";
+import {
+  Grid,
+  GridColumn,
+  GridRow,
+  Header,
+  TransitionGroup,
+} from "semantic-ui-react";
 import PostCard from "../components/PostCard";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
@@ -36,31 +43,48 @@ const Home = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <Grid columns="three" divided>
+    <Grid container stackable columns={3} divided>
       <Grid.Row>
-        <h1>Recent Posts</h1>
+        <Grid.Column>
+          <Header as="h1" textAlign="center" style={{ marginBottom: "30px" }}>
+           Akash Medium
+          </Header>
+        </Grid.Column>
       </Grid.Row>
 
-      <GridRow>
+      <Grid.Row>
         {user && (
-          <Grid columns="one">
+          <Grid.Column width={16}>
             <PostForm />
-          </Grid>
+          </Grid.Column>
         )}
+      </Grid.Row>
 
+      <Grid.Row>
         {loading ? (
-          <h1>...loading</h1>
+          <Grid.Column>
+            <Header as="h3" textAlign="center" color="grey">
+              ...Loading
+            </Header>
+          </Grid.Column>
         ) : (
           <TransitionGroup>
-            {posts &&
+            {posts && posts.length > 0 ? (
               posts.map((post) => (
-                <GridColumn key={post?.id}>
-                  <PostCard post={post} />
-                </GridColumn>
-              ))}
+                <Grid.Column key={post?.id} style={{ marginBottom: "20px" }}>
+                  <PostCard post={post} user={user} />
+                </Grid.Column>
+              ))
+            ) : (
+              <Grid.Column>
+                <Header as="h3" textAlign="center" color="grey">
+                  No posts available
+                </Header>
+              </Grid.Column>
+            )}
           </TransitionGroup>
         )}
-      </GridRow>
+      </Grid.Row>
     </Grid>
   );
 };
