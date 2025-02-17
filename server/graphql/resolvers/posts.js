@@ -4,13 +4,39 @@ const {
 } = require("apollo-server-express");
 const Post = require("../../models/Post");
 const checkAuth = require("../../utils/check-auth");
+const redis = require("../../redis-client");
 
 module.exports = {
   Query: {
     async getPosts() {
+      const redisKey = 'posts';
       try {
+        const cachedPosts = await redis.get(redisKey);
+        
+        if (cachedPosts) {
+          console.log("caching")
+          const parsedPosts = JSON.parse(cachedPosts);
+          
+          // Validate and filter out posts with invalid comment data
+          const validatedPosts = parsedPosts.map(post => {
+            if (!post) return null;
+            
+            // Ensure comments are valid (have required fields)
+            if (post.comments && Array.isArray(post.comments)) {
+              post.comments = post.comments.filter(comment => 
+                comment && comment.id && comment.createdAt && comment.body && comment.username
+              );
+            }
+            
+            return post;
+          });
+          
+          return validatedPosts;
+        }
+        
         const posts = await Post.find().sort({ _id: -1 });
-        console.log("posts" , posts)
+        console.log("I am not caching")
+        await redis.set(redisKey, JSON.stringify(posts) );
         return posts;
       } catch (error) {
         throw new Error(error);
@@ -46,6 +72,9 @@ module.exports = {
 
       const post = await newPost.save();
 
+      await redis.set(`post:${post._id}`, JSON.stringify(post) , 'EX' , 3600);
+      await redis.del('posts');
+
 
       return post;
     },
@@ -56,6 +85,10 @@ module.exports = {
         const post = await Post.findById(postId);
         if (user.username === post.username) {
           await post.deleteOne();
+
+          await redis.del(`post:${postId}`);
+          await redis.del('posts');
+
           return "Post deleted successfully";
         } else {
           throw new AuthenticationError(
@@ -80,6 +113,9 @@ module.exports = {
           });
         }
         await post.save();
+        await redis.set(`post:${postId}`, JSON.stringify(post) , 'EX' , 3600);
+        await redis.del('posts');
+
         return post;
       } else {
         throw new UserInputError("Post not found");

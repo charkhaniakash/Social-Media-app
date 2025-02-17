@@ -5,7 +5,8 @@ const { MONGODB } = require("./config.js");
 
 // const Post = require("./models/Post");
 const typeDefs = require('./graphql/typeDefs')
-const resolvers = require('./graphql/resolvers')
+const resolvers = require('./graphql/resolvers');
+const redis = require("./redis-client.js");
 
 // const typeDefs = gql`
 //  type Post {
@@ -34,7 +35,16 @@ const resolvers = require('./graphql/resolvers')
 //   },
 // };
 
-const server = new ApolloServer({ typeDefs, resolvers,context:({req})=>({req}) });
+// const server = new ApolloServer({ typeDefs, resolvers,context:({req})=>({req}) });
+
+
+
+
+const server = new ApolloServer({ 
+  typeDefs, 
+  resolvers,
+  context: ({ req }) => ({ req, redis })  // Pass Redis client to context
+});
 
 const POST = process.env.PORT || 5000; 
 
