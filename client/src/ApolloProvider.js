@@ -7,7 +7,8 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: "https://akash-medium-blob.vercel.app/",
+  // uri: "https://akash-medium-blob.vercel.app/",
+  uri: "http://localhost:5000/api",
 });
 
 const authLink = setContext((_, { headers }) => {
